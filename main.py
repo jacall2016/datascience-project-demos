@@ -1,7 +1,6 @@
 from utilities import AnalysisUtilities
 from flask import Flask, render_template, request, send_file, abort
 import os
-import sys
 
 app = Flask(__name__)
 
