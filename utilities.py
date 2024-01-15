@@ -76,7 +76,6 @@ class AnalysisUtilities:
 
         return analysis_df
 
-
     @staticmethod
     def write_analysis_sheet(analysis_df, file_path, new_sheet_name):
         # Check if the "Analysis" sheet already exists and delete it
@@ -161,6 +160,70 @@ class AnalysisUtilities:
         slope, _, _, _, _ = linregress(analysis_df['relative_well_number'], analysis_df['yemk_vl2_bl1'])
 
         return slope
+
+    @staticmethod
+    def calculate_mean_phl_vl2_phl_bl1(analysis_df):
+        """
+        Calculate the mean of the 'pHL_VL2_BL1' column.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+
+        Returns:
+        - float: The mean of the 'pHL_VL2_BL1' column.
+        """
+        # Calculate the mean
+        mean_phl_vl2_phl_bl1 = analysis_df['pHL_VL2_BL1'].mean()
+
+        return mean_phl_vl2_phl_bl1
+
+    @staticmethod
+    def calculate_mean_yemk_vl2_yemk_bl1(analysis_df):
+        """
+        Calculate the mean of the 'yemk_vl2_bl1' column.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+
+        Returns:
+        - float: The mean of the 'yemk_vl2_bl1' column.
+        """
+        # Calculate the mean
+        mean_yemk_vl2_yemk_bl1 = analysis_df['yemk_vl2_bl1'].mean()
+
+        return mean_yemk_vl2_yemk_bl1
+
+    @staticmethod
+    def calculate_sd_phl_vl2_phl_bl1(analysis_df):
+        """
+        Calculate the standard deviation of the 'pHL_VL2_BL1' column.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+
+        Returns:
+        - float: The standard deviation of the 'pHL_VL2_BL1' column.
+        """
+        # Calculate the standard deviation
+        sd_phl_vl2_phl_bl1 = analysis_df['pHL_VL2_BL1'].std()
+
+        return sd_phl_vl2_phl_bl1
+
+    @staticmethod
+    def calculate_sd_yemk_vl2_yemk_bl1(analysis_df):
+        """
+        Calculate the standard deviation of the 'yemk_vl2_bl1' column.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+
+        Returns:
+        - float: The standard deviation of the 'yemk_vl2_bl1' column.
+        """
+        # Calculate the standard deviation
+        sd_yemk_vl2_yemk_bl1 = analysis_df['yemk_vl2_bl1'].std()
+
+        return sd_yemk_vl2_yemk_bl1
 
     @staticmethod
     def calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1):

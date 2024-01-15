@@ -36,6 +36,10 @@ def main():
     #get the slopes for phl_vl2_phl_bl1, and yemk_vl2_bl1
     slope_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_slope_phl_vl2_phl_bl1(analysis_df)
     slope_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_slope_yemk_vl2_bl1(analysis_df)
+    mean_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_mean_phl_vl2_phl_bl1(analysis_df)
+    mean_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_mean_yemk_vl2_yemk_bl1(analysis_df)
+    sd_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_sd_phl_vl2_phl_bl1(analysis_df)
+    sd_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_sd_yemk_vl2_yemk_bl1(analysis_df)
 
     # Calculate the corrected slopr for ph1_vl2_bl1
     analysis_df = AnalysisUtilities.calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1)
