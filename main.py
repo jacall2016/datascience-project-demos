@@ -15,25 +15,26 @@ def main():
     new_sheet_name = AnalysisUtilities.get_new_sheet_name()
 
     # Prepare analysis DataFrame
-    combined_df = AnalysisUtilities.prepare_analysis_df(file_path, sheet1_name, sheet2_name)
+    combined_df = AnalysisUtilities.prepare_analysis_df(file_path, sheet1_name, sheet2_name, AnalysisUtilities.remove_columns_names())
 
+    # get current combined_df column names
     old_column_name_list = AnalysisUtilities.get_old_column_names(combined_df)
 
-    analysis_df = AnalysisUtilities.rewrite_column_names(combined_df, renamed_column_names_list, new_column_names_list)
+    analysis_df = AnalysisUtilities.rewrite_column_names(combined_df, old_column_name_list,  renamed_column_names_list, new_column_names_list)
 
     # Calculate 'pHL_VL2_BL1' column
     analysis_df = AnalysisUtilities.calculate_pHL_VL2_BL1(analysis_df)
 
     # Calculate 'yemk_vl2_bl1' column
-    #analysis_df = AnalysisUtilities.calculate_yemk_vl2_bl1(analysis_df)
+    analysis_df = AnalysisUtilities.calculate_yemk_vl2_bl1(analysis_df)
 
     # Calculate 'relative_well_number' column
-    #analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
+    analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
 
-    #slope_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_slope(analysis_df, AnalysisUtilities.get_slope_X_column_name(), AnalysisUtilities.get_slope_Y_Column_name())
+    slope_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_slope(analysis_df, AnalysisUtilities.get_slope_X_column_name(), AnalysisUtilities.get_slope_Y_Column_name())
 
     # Write analysis sheet
-    #AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
+    AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
 
 if __name__ == "__main__":
     main()

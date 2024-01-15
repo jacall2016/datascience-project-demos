@@ -20,6 +20,10 @@ class AnalysisUtilities:
         return "Analysis"
 
     @staticmethod
+    def remove_columns_names():
+        return ['mean', 'sd']
+
+    @staticmethod
     def get_old_column_names(combined_df):
         # Extract only the column names from the combined_df DataFrame
         old_column_name_list = combined_df.columns.tolist()
@@ -41,7 +45,7 @@ class AnalysisUtilities:
         return renamed_column_names_list
 
     @staticmethod
-    def prepare_analysis_df(file_path, sheet1, sheet2):
+    def prepare_analysis_df(file_path, sheet1, sheet2, remove_columns_names):
         # Create DataFrames for "Samples" and "High Controls" sheets
         samples_df = pd.read_excel(file_path, sheet_name=sheet1)
         high_controls_df = pd.read_excel(file_path, sheet_name=sheet2)
@@ -53,16 +57,16 @@ class AnalysisUtilities:
         combined_df = combined_df.dropna(how='all')
 
         # Convert values in "X1" column to lowercase and remove rows where the value is "mean" or "sd"
-        combined_df = combined_df[~combined_df[combined_df.columns[0]].str.lower().isin(['mean', 'sd'])]
+        combined_df = combined_df[~combined_df[combined_df.columns[0]].str.lower().isin(remove_columns_names)]
 
         return combined_df
 
     @staticmethod
-    def rewrite_column_names(combined_df, renamed_column_names_list, new_column_names_list):
+    def rewrite_column_names(combined_df, old_column_name_list, renamed_column_names_list, new_column_names_list):
         analysis_df = combined_df.copy()  # Create a copy to avoid modifying the original DataFrame
 
         # Rename existing columns
-        for old_name, new_name in zip(renamed_column_names_list, new_column_names_list):
+        for old_name, new_name in zip(old_column_name_list, renamed_column_names_list):
             analysis_df.rename(columns={old_name: new_name}, inplace=True)
 
         # Add new empty columns
@@ -76,11 +80,11 @@ class AnalysisUtilities:
     def write_analysis_sheet(analysis_df, file_path, new_sheet_name):
         # Check if the "Analysis" sheet already exists and delete it
         with pd.ExcelWriter(file_path, engine='openpyxl', mode='a') as writer:
-            if 'Analysis' in writer.sheets:
-                writer.book.remove(writer.sheets['Analysis'])
+            if new_sheet_name in writer.sheets:
+                writer.book.remove(writer.sheets[new_sheet_name])
 
             # Write the DataFrame to a new sheet named "Analysis"
-            analysis_df.to_excel(writer, sheet_name='Analysis', index=False)
+            analysis_df.to_excel(writer, sheet_name=new_sheet_name, index=False)
 
     @staticmethod
     def calculate_pHL_VL2_BL1(analysis_df):
@@ -94,6 +98,7 @@ class AnalysisUtilities:
         - pd.DataFrame: The analysis DataFrame with the 'pHL_VL2_BL1' column calculated.
         """
         analysis_df['pHL_VL2_BL1'] = analysis_df['phl_vl2'] / analysis_df['phl_bl1']
+        
         return analysis_df
     
     @staticmethod
