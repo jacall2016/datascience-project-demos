@@ -20,7 +20,7 @@ class AnalysisUtilities:
         return "Analysis"
 
     @staticmethod
-    def remove_columns_names():
+    def remove_columns_names_list():
         return ['mean', 'sd']
 
     @staticmethod
@@ -46,6 +46,7 @@ class AnalysisUtilities:
 
     @staticmethod
     def prepare_analysis_df(file_path, sheet1, sheet2, remove_columns_names):
+
         # Create DataFrames for "Samples" and "High Controls" sheets
         samples_df = pd.read_excel(file_path, sheet_name=sheet1)
         high_controls_df = pd.read_excel(file_path, sheet_name=sheet2)
@@ -130,7 +131,7 @@ class AnalysisUtilities:
         return analysis_df
     
     @staticmethod
-    def calculate_slope(analysis_df, x_column, y_column):
+    def calculate_slope_phl_vl2_phl_bl1(analysis_df):
         """
         Calculate the slope of 'pHL_VL2_BL1' vs 'relative_well_number' columns.
 
@@ -142,6 +143,22 @@ class AnalysisUtilities:
         """
         # Perform linear regression
         slope, _, _, _, _ = linregress(analysis_df['relative_well_number'], analysis_df['pHL_VL2_BL1'])
+
+        return slope
+    
+    @staticmethod
+    def calculate_slope_yemk_vl2_bl1(analysis_df):
+        """
+        Calculate the slope of 'yemk_vl2_bl1' vs 'relative_well_number' columns.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+
+        Returns:
+        - float: The slope of the linear regression.
+        """
+        # Perform linear regression
+        slope, _, _, _, _ = linregress(analysis_df['relative_well_number'], analysis_df['yemk_vl2_bl1'])
 
         return slope
 
@@ -161,9 +178,16 @@ class AnalysisUtilities:
         return analysis_df
     
     @staticmethod
-    def get_slope_X_column_name():
-        pass
+    def calculate_slope_corrected_yemk_vl2_bl1(analysis_df, slope_yemk_vl2_yemk_bl1):
+        """
+        Calculate the values for the 'slope_corrected_yemk_vl2_bl1' column.
 
-    @staticmethod
-    def get_slope_Y_Column_name():
-        pass
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+        - slope_yemk_vl2_yemk_bl1 (float): The calculated slope.
+
+        Returns:
+        - pd.DataFrame: The analysis DataFrame with the 'slope_corrected_yemk_vl2_bl1' column calculated.
+        """
+        analysis_df['slope_corrected_yemk_vl2_bl1'] = analysis_df['yemk_vl2_bl1'] - (analysis_df['relative_well_number'] * slope_yemk_vl2_yemk_bl1)
+        return analysis_df
