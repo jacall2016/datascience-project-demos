@@ -33,19 +33,29 @@ def main():
     # Calculate 'relative_well_number' column
     analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
 
-    #get the slopes for phl_vl2_phl_bl1, and yemk_vl2_bl1
+    # calculate the slopes
     slope_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_slope_phl_vl2_phl_bl1(analysis_df)
     slope_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_slope_yemk_vl2_bl1(analysis_df)
+
+    # Calculate and populate the corrected slope for ph1_vl2_bl1
+    analysis_df = AnalysisUtilities.calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1)
+    analysis_df = AnalysisUtilities.calculate_slope_corrected_yemk_vl2_bl1(analysis_df, slope_yemk_vl2_yemk_bl1)
+
+    # calculate the means
     mean_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_mean_phl_vl2_phl_bl1(analysis_df)
     mean_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_mean_yemk_vl2_yemk_bl1(analysis_df)
+
+    # calculate the standard deviations
     sd_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_sd_phl_vl2_phl_bl1(analysis_df)
     sd_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_sd_yemk_vl2_yemk_bl1(analysis_df)
+
+    # calculate the cuttoffs
     cuttoff_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_cuttoff_phl_vl2_phl_bl1(mean_phl_vl2_phl_bl1, sd_phl_vl2_phl_bl1)
     cuttoff_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_cuttoff_yemk_vl2_yemk_bl1(mean_yemk_vl2_yemk_bl1, sd_yemk_vl2_yemk_bl1)
 
-    # Calculate the corrected slopr for ph1_vl2_bl1
-    analysis_df = AnalysisUtilities.calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1)
-    analysis_df = AnalysisUtilities.calculate_slope_corrected_yemk_vl2_bl1(analysis_df, slope_yemk_vl2_yemk_bl1)
+    # populate the cutoff_PHL_VL2_BL1_below_cuttoff if above the cutoff don't include
+    analysis_df = AnalysisUtilities.populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1)
+    analysis_df = AnalysisUtilities.populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1)
 
     # Write analysis sheet
     AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)

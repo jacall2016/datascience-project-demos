@@ -173,7 +173,7 @@ class AnalysisUtilities:
         - float: The mean of the 'pHL_VL2_BL1' column.
         """
         # Calculate the mean
-        mean_phl_vl2_phl_bl1 = analysis_df['pHL_VL2_BL1'].mean()
+        mean_phl_vl2_phl_bl1 = analysis_df['slope_corrected_phl_vl2_bl1'].mean()
 
         return mean_phl_vl2_phl_bl1
 
@@ -189,7 +189,7 @@ class AnalysisUtilities:
         - float: The mean of the 'yemk_vl2_bl1' column.
         """
         # Calculate the mean
-        mean_yemk_vl2_yemk_bl1 = analysis_df['yemk_vl2_bl1'].mean()
+        mean_yemk_vl2_yemk_bl1 = analysis_df['slope_corrected_yemk_vl2_bl1'].mean()
 
         return mean_yemk_vl2_yemk_bl1
 
@@ -205,7 +205,7 @@ class AnalysisUtilities:
         - float: The standard deviation of the 'pHL_VL2_BL1' column.
         """
         # Calculate the standard deviation
-        sd_phl_vl2_phl_bl1 = analysis_df['pHL_VL2_BL1'].std()
+        sd_phl_vl2_phl_bl1 = analysis_df['slope_corrected_phl_vl2_bl1'].std()
 
         return sd_phl_vl2_phl_bl1
 
@@ -221,12 +221,13 @@ class AnalysisUtilities:
         - float: The standard deviation of the 'yemk_vl2_bl1' column.
         """
         # Calculate the standard deviation
-        sd_yemk_vl2_yemk_bl1 = analysis_df['yemk_vl2_bl1'].std()
+        sd_yemk_vl2_yemk_bl1 = analysis_df['slope_corrected_yemk_vl2_bl1'].std()
 
         return sd_yemk_vl2_yemk_bl1
 
     @staticmethod
     def calculate_cuttoff_phl_vl2_phl_bl1(mean_phl_vl2_phl_bl1, sd_phl_vl2_phl_bl1):
+
         cutoff = mean_phl_vl2_phl_bl1 + (1.5 * sd_phl_vl2_phl_bl1)
 
         return cutoff
@@ -266,4 +267,44 @@ class AnalysisUtilities:
         - pd.DataFrame: The analysis DataFrame with the 'slope_corrected_yemk_vl2_bl1' column calculated.
         """
         analysis_df['slope_corrected_yemk_vl2_bl1'] = analysis_df['yemk_vl2_bl1'] - (analysis_df['relative_well_number'] * slope_yemk_vl2_yemk_bl1)
+        return analysis_df
+    
+    @staticmethod
+    def populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1):
+        """
+        Populate the 'cutoff_PHL_VL2_BL1_below_cuttoff' column based on the cutoff value.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+        - cuttoff_phl_vl2_phl_bl1 (float): The cutoff value.
+
+        Returns:
+        - pd.DataFrame: The analysis DataFrame with the 'cutoff_PHL_VL2_BL1_below_cuttoff' column populated.
+        """
+        # Create a copy of the 'pHL_VL2_BL1' column
+        analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'] = analysis_df['slope_corrected_phl_vl2_bl1']
+
+        # Replace values with None where the condition is not met
+        analysis_df.loc[analysis_df['slope_corrected_phl_vl2_bl1'] > cuttoff_phl_vl2_phl_bl1, 'cutoff_PHL_VL2_BL1_below_cuttoff'] = None
+
+        return analysis_df
+
+    @staticmethod
+    def populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1):
+        """
+        Populate the 'cutoff_yemk_vl2_bl1_below_cuttoff' column based on the cutoff value.
+
+        Parameters:
+        - analysis_df (pd.DataFrame): The analysis DataFrame.
+        - cuttoff_yemk_vl2_yemk_bl1 (float): The cutoff value.
+
+        Returns:
+        - pd.DataFrame: The analysis DataFrame with the 'cutoff_yemk_vl2_bl1_below_cuttoff' column populated.
+        """
+        # Create a copy of the 'yemk_vl2_bl1' column
+        analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'] = analysis_df['slope_corrected_yemk_vl2_bl1']
+
+        # Replace values with None where the condition is not met
+        analysis_df.loc[analysis_df['slope_corrected_yemk_vl2_bl1'] > cuttoff_yemk_vl2_yemk_bl1, 'cutoff_yemk_vl2_bl1_below_cuttoff'] = None
+
         return analysis_df
