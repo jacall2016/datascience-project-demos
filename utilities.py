@@ -226,6 +226,19 @@ class AnalysisUtilities:
         return sd_yemk_vl2_yemk_bl1
 
     @staticmethod
+    def calculate_cuttoff_phl_vl2_phl_bl1(mean_phl_vl2_phl_bl1, sd_phl_vl2_phl_bl1):
+        cutoff = mean_phl_vl2_phl_bl1 + (1.5 * sd_phl_vl2_phl_bl1)
+
+        return cutoff
+
+    @staticmethod
+    def calculate_cuttoff_yemk_vl2_yemk_bl1(mean_yemk_vl2_yemk_bl1, sd_yemk_vl2_yemk_bl1):
+        
+        cutoff = mean_yemk_vl2_yemk_bl1 + (1.5 * sd_yemk_vl2_yemk_bl1)
+
+        return cutoff
+
+    @staticmethod
     def calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1):
         """
         Calculate the values for the 'slope_corrected_phl_vl2_bl1' column.
