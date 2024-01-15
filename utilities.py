@@ -308,3 +308,33 @@ class AnalysisUtilities:
         analysis_df.loc[analysis_df['slope_corrected_yemk_vl2_bl1'] > cuttoff_yemk_vl2_yemk_bl1, 'cutoff_yemk_vl2_bl1_below_cuttoff'] = None
 
         return analysis_df
+    
+    @staticmethod
+    def calculate_corrected_mean_phl_vl2_phl_bl1(analysis_df):
+        
+        # calculate the corrected_mean_phl_vl2_phl_bl1 by the cutoff_PHL_VL2_BL1_below_cuttoff 
+        corrected_mean_phl_vl2_phl_bl1 = analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].mean()
+
+        return corrected_mean_phl_vl2_phl_bl1
+
+    @staticmethod
+    def calculate_corrected_mean_yemk_vl2_yemk_bl1(analysis_df):
+        
+        # calculate the corrected_mean_yemk_vl2_yemk_bl1 by the cutoff_yemk_vl2_bl1_below_cuttoff 
+        corrected_mean_yemk_vl2_yemk_bl1 = analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].mean()
+
+    @staticmethod
+    def calculate_corrected_sd_phl_vl2_phl_bl1(analysis_df):
+        
+        # calculate the corrected_mean_phl_vl2_phl_bl1 by the cutoff_PHL_VL2_BL1_below_cuttoff 
+        corrected_sd_phl_vl2_phl_bl1 = analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].std()
+
+        return corrected_sd_phl_vl2_phl_bl1
+
+    @staticmethod
+    def calculate_corrected_sd_yemk_vl2_yemk_bl1(analysis_df):
+        
+        # calculate the corrected_mean_yemk_vl2_yemk_bl1 by the cutoff_yemk_vl2_bl1_below_cuttoff 
+        corrected_sd_yemk_vl2_yemk_bl1 = analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].std()
+
+        return corrected_sd_yemk_vl2_yemk_bl1

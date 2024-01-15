@@ -57,6 +57,12 @@ def main():
     analysis_df = AnalysisUtilities.populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1)
     analysis_df = AnalysisUtilities.populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1)
 
+    corrected_mean_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_corrected_mean_phl_vl2_phl_bl1(analysis_df)
+    corrected_mean_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_corrected_mean_yemk_vl2_yemk_bl1(analysis_df)
+
+    corrected_sd_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_corrected_sd_phl_vl2_phl_bl1(analysis_df)
+    corrected_sd_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_corrected_sd_yemk_vl2_yemk_bl1(analysis_df)
+
     # Write analysis sheet
     AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
 
