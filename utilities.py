@@ -1,5 +1,7 @@
 import pandas as pd
 from scipy.stats import linregress
+from datetime import datetime
+import os
 
 class AnalysisUtilities:
     
@@ -323,6 +325,8 @@ class AnalysisUtilities:
         # calculate the corrected_mean_yemk_vl2_yemk_bl1 by the cutoff_yemk_vl2_bl1_below_cuttoff 
         corrected_mean_yemk_vl2_yemk_bl1 = analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].mean()
 
+        return corrected_mean_yemk_vl2_yemk_bl1
+
     @staticmethod
     def calculate_corrected_sd_phl_vl2_phl_bl1(analysis_df):
         
@@ -338,3 +342,124 @@ class AnalysisUtilities:
         corrected_sd_yemk_vl2_yemk_bl1 = analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].std()
 
         return corrected_sd_yemk_vl2_yemk_bl1
+    
+    @staticmethod
+    def populate_phl_z_score(analysis_df, corrected_mean_phl_vl2_phl_bl1, corrected_sd_phl_vl2_phl_bl1):
+
+        if not analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].isna().all():
+            analysis_df['phl_z_score'] = (analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'] - corrected_mean_phl_vl2_phl_bl1)/corrected_sd_phl_vl2_phl_bl1
+
+        return analysis_df
+    
+    @staticmethod
+    def populate_yemk_z_score(analysis_df, corrected_mean_yemk_vl2_yemk_bl1, corrected_sd_yemk_vl2_yemk_bl1):
+
+        if not analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].isna().all():
+            analysis_df['yemk_z_score'] = (analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'] - corrected_mean_yemk_vl2_yemk_bl1)/corrected_sd_yemk_vl2_yemk_bl1
+
+        return analysis_df
+    
+    @staticmethod
+    def calculate_live_mean(analysis_df):
+        
+        live_mean = analysis_df['live_percentage'].mean()
+
+        return live_mean
+
+    @staticmethod
+    def calculate_live_sd(analysis_df):
+
+        live_sd = analysis_df['live_percentage'].std()
+
+        return live_sd
+    
+    @staticmethod
+    def populate_live_z_score(analysis_df, live_mean, live_sd):
+        
+        if not analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].isna().all():
+            analysis_df['live_z_score'] = (analysis_df['live_percentage'] - live_mean)/live_sd
+
+        return analysis_df
+    
+    @staticmethod
+    def populate_hits_phl_z_score(analysis_df):
+        # Use boolean indexing to filter rows based on conditions
+        condition = (analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].notna()) & (analysis_df['phl_z_score'] < -5)
+
+        # Populate 'hits_phl_z_score' based on the condition
+        analysis_df.loc[condition, 'hits_phl_z_score'] = analysis_df.loc[condition, 'phl_z_score']
+
+        return analysis_df
+    
+    @staticmethod
+    def populate_hits_yemk_z_score(analysis_df):
+        # Use boolean indexing to filter rows based on conditions
+        condition = (analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].notna()) & (analysis_df['yemk_z_score'] < -5)
+
+        # Populate 'hits_yemk_z_score' based on the condition
+        analysis_df.loc[condition, 'hits_yemk_z_score'] = analysis_df.loc[condition, 'yemk_z_score']
+
+        return analysis_df
+
+    @staticmethod
+    def populate_hits_live_z_score(analysis_df):
+        # Use boolean indexing to filter rows based on conditions
+        condition = analysis_df['live_z_score'] < -5
+
+        # Populate 'hits_live_z_score' based on the condition
+        analysis_df.loc[condition, 'hits_live_z_score'] = analysis_df.loc[condition, 'live_z_score']
+
+        return analysis_df
+    
+    @staticmethod
+    def export_All_Plates_YEMK_pHL_Live(analysis_df, excel_file_path, base_sheet_name):
+        # Select relevant columns from analysis_df
+        selected_columns = ['well_number', 'phl_z_score', 'yemk_z_score', 'live_z_score']
+        export_df = analysis_df[selected_columns]
+
+        # Format datetime for readability
+        formatted_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+        # Append formatted datetime to the base sheet name
+        sheet_name = f"{base_sheet_name}_{formatted_datetime}"
+        # Check if the file exists
+        file_exists = os.path.isfile(excel_file_path)
+
+        # Create the file if it doesn't exist
+        if not file_exists:
+            export_df.to_excel(excel_file_path, sheet_name=sheet_name, index=False)
+        else:
+            # Export the selected columns to a new sheet if the file exists
+            with pd.ExcelWriter(excel_file_path, engine='openpyxl', mode='a') as writer:
+                export_df.to_excel(writer, sheet_name=sheet_name, index=False)
+        return export_df
+    
+    @staticmethod
+    def export_All_hits(analysis_df, excel_file_path, base_sheet_name):
+        
+        # Select relevant columns from analysis_df
+        selected_columns = ['well_number', 'hits_phl_z_score', 'hits_yemk_z_score', 'hits_live_z_score']
+
+        # Filter out rows where all specified columns don't have any numeric values
+        export_df = analysis_df[analysis_df[selected_columns].applymap(lambda x: isinstance(x, (int, float))).any(axis=1)]
+
+        # Include only the selected columns in export_df
+        export_df = export_df[selected_columns]
+
+        # Format datetime for readability
+        formatted_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+        # Append formatted datetime to the base sheet name
+        sheet_name = f"{base_sheet_name}_{formatted_datetime}"
+        # Check if the file exists
+        file_exists = os.path.isfile(excel_file_path)
+
+        # Create the file if it doesn't exist
+        if not file_exists:
+            export_df.to_excel(excel_file_path, sheet_name=sheet_name, index=False, engine='openpyxl')
+        else:
+            # Export the selected columns to a new sheet if the file exists
+            with pd.ExcelWriter(excel_file_path, engine='openpyxl', mode='a') as writer:
+                export_df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+        return export_df

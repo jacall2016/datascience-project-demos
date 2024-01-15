@@ -1,5 +1,3 @@
-import pandas as pd
-
 from utilities import AnalysisUtilities
 
 def main():
@@ -57,11 +55,35 @@ def main():
     analysis_df = AnalysisUtilities.populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1)
     analysis_df = AnalysisUtilities.populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1)
 
+    #calculate correct mean or phl_vl2_phl_bl1 and yemk_vl2_yemk_bl1
     corrected_mean_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_corrected_mean_phl_vl2_phl_bl1(analysis_df)
     corrected_mean_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_corrected_mean_yemk_vl2_yemk_bl1(analysis_df)
 
+    # calculate correct standard deviation for ph1 and yemk
     corrected_sd_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_corrected_sd_phl_vl2_phl_bl1(analysis_df)
     corrected_sd_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_corrected_sd_yemk_vl2_yemk_bl1(analysis_df)
+
+    #populate ph1 and yemk z score
+    analysis_df = AnalysisUtilities.populate_phl_z_score(analysis_df, corrected_mean_phl_vl2_phl_bl1, corrected_sd_phl_vl2_phl_bl1)
+    analysis_df = AnalysisUtilities.populate_yemk_z_score(analysis_df, corrected_mean_yemk_vl2_yemk_bl1, corrected_sd_yemk_vl2_yemk_bl1)
+
+    #calculate live mean and standard deviation
+    live_mean = AnalysisUtilities.calculate_live_mean(analysis_df)
+    live_sd = AnalysisUtilities.calculate_live_sd(analysis_df)
+
+    #populate live z score
+    analysis_df = AnalysisUtilities.populate_live_z_score(analysis_df, live_mean, live_sd)
+
+    #populate the hits
+    analysis_df = AnalysisUtilities.populate_hits_phl_z_score(analysis_df)
+    analysis_df = AnalysisUtilities.populate_hits_yemk_z_score(analysis_df)
+    analysis_df = AnalysisUtilities.populate_hits_live_z_score(analysis_df)
+
+    #write the All_Plates_YEMK_pHL_Live Excel file
+    AnalysisUtilities.export_All_Plates_YEMK_pHL_Live(analysis_df, 'root/All_P_YEMK_pHL_Live.xlsx','All_P_YEMK_pHL_Live')
+
+    #write All hits excel file exclude all rows that don't have a hit in at least 1 of the three z numbers
+    AnalysisUtilities.export_All_hits(analysis_df, 'root/All_hits.xlsx','All_hits')
 
     # Write analysis sheet
     AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
