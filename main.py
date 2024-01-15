@@ -13,7 +13,7 @@ def main():
     new_sheet_name = AnalysisUtilities.get_new_sheet_name()
     removed_columns_names_list = AnalysisUtilities.remove_columns_names_list()
 
-    # Prepare analysis DataFrame
+    # Prepare analysis DataFrame by combining data from Samples and High Controls and removing mean and SD rows
     combined_df = AnalysisUtilities.prepare_analysis_df(file_path, sheet1_name, sheet2_name, removed_columns_names_list)
 
     # get current combined_df column names
