@@ -28,21 +28,21 @@ def main():
     analysis_df = AnalysisUtilities.calculate_pHL_VL2_BL1(analysis_df)
 
     # Calculate 'yemk_vl2_bl1' column
-    #analysis_df = AnalysisUtilities.calculate_yemk_vl2_bl1(analysis_df)
+    analysis_df = AnalysisUtilities.calculate_yemk_vl2_bl1(analysis_df)
 
     # Calculate 'relative_well_number' column
-    #analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
+    analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
 
     #get the slopes for phl_vl2_phl_bl1, and yemk_vl2_bl1
-    #slope_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_slope_phl_vl2_phl_bl1(analysis_df)
-    #slope_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_slope_corrected_yemk_vl2_bl1(analysis_df)
+    slope_phl_vl2_phl_bl1 = AnalysisUtilities.calculate_slope_phl_vl2_phl_bl1(analysis_df)
+    slope_yemk_vl2_yemk_bl1 = AnalysisUtilities.calculate_slope_yemk_vl2_bl1(analysis_df)
 
     # Calculate the corrected slopr for ph1_vl2_bl1
-    #analysis_df = AnalysisUtilities.calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1)
-    #analysis_df = AnalysisUtilities.calculate_slope_corrected_yemk_vl2_bl1(analysis_df, slope_yemk_vl2_yemk_bl1)
+    analysis_df = AnalysisUtilities.calculate_slope_corrected_phl_vl2_bl1(analysis_df, slope_phl_vl2_phl_bl1)
+    analysis_df = AnalysisUtilities.calculate_slope_corrected_yemk_vl2_bl1(analysis_df, slope_yemk_vl2_yemk_bl1)
 
     # Write analysis sheet
-    #AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
+    AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
 
 if __name__ == "__main__":
     main()
