@@ -4,7 +4,7 @@ from scipy.stats import linregress
 class AnalysisUtilities:
     
     @staticmethod
-    def getfile_path():
+    def getfile_name():
         return 'LC2-032_KCP1 pHL-YEMK DC 20231030.xlsx'
 
     @staticmethod

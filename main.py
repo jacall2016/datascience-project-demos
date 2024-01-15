@@ -4,8 +4,10 @@ from utilities import AnalysisUtilities
 
 def main():
     # Specify the path to your Excel file
-    file_path = AnalysisUtilities.getfile_path()
-    file_path = "root/" + file_path 
+    file_name = AnalysisUtilities.getfile_name()
+    file_path = "root/" + file_name
+
+    #get functions to retreave the desired data
     renamed_column_names_list = AnalysisUtilities.get_renamed_column_names()
     new_column_names_list = AnalysisUtilities.get_new_column_names()
     sheet1_name = AnalysisUtilities.getsheet1_name()
