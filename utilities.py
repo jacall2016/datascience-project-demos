@@ -23,8 +23,6 @@ class AnalysisUtilities:
     def get_old_column_names(combined_df):
         # Extract only the column names from the combined_df DataFrame
         old_column_name_list = combined_df.columns.tolist()
-
-        print(old_column_name_list)
         
         return old_column_name_list
 

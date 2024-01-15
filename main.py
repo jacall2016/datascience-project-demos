@@ -22,7 +22,7 @@ def main():
     analysis_df = AnalysisUtilities.rewrite_column_names(combined_df, renamed_column_names_list, new_column_names_list)
 
     # Calculate 'pHL_VL2_BL1' column
-    #analysis_df = AnalysisUtilities.calculate_pHL_VL2_BL1(analysis_df)
+    analysis_df = AnalysisUtilities.calculate_pHL_VL2_BL1(analysis_df)
 
     # Calculate 'yemk_vl2_bl1' column
     #analysis_df = AnalysisUtilities.calculate_yemk_vl2_bl1(analysis_df)
