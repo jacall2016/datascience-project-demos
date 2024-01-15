@@ -1,0 +1,65 @@
+body {
+  font-family: Arial, sans-serif;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: lightgray;
+  color: black;
+  height: 100vh;
+  overflow: hidden; /* Disable scrolling */
+  display: flex;
+  flex-direction: column;
+}
+
+header, footer {
+  background-color: #3498db;
+  color: #fff;
+  text-align: center;
+  padding: 1em;
+  width: 100%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 50%; /* Set main to half the screen width */
+  width: 100%;
+  margin: auto; /* Center main horizontally */
+  flex-grow: 1; /* Allow main to grow and fill the available space */
+  padding: 20px;
+  padding-right: 30px;
+  background-color: #fff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+label {
+  margin-bottom: 0.5em;
+}
+
+input {
+  margin-bottom: 1em;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  background-color: white; /* Set the background color to white */
+}
+
+.gray_button {
+  background-color: #3498db; /* Same as the header background color */
+  color: black; /* Black text color */
+  font-weight: bold;
+  width: 50%;
+  margin: auto; /* Center the .blue_button */
+}
+
+footer {
+  margin-top: auto; /* Push footer to the bottom of the container */
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Sheet Combiner</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Drugscreen Analysis</h1>
+    </header>
+
+    <main>
+        <h2>Excel Sheet Combiner</h2>
+        <form action="/combine_sheets" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="input_file">Select Excel File:</label>
+                <input type="file" name="input_file" id="input_file" accept=".xlsx" required>
+            </div>
+
+            <div>
+                <label for="sheet1">Sheet 1 Name:</label>
+                <input type="text" name="sheet1" id="sheet1" required>
+            </div>
+
+            <div>
+                <label for="sheet2">Sheet 2 Name:</label>
+                <input type="text" name="sheet2" id="sheet2" required>
+            </div>
+
+            <div>
+                <label for="final_sheet">Final Sheet Name:</label>
+                <input type="text" name="final_sheet" id="final_sheet" required>
+            </div>
+
+            <input class="gray_button" type="submit" value="Combine Sheets">
+
+        </form>
+
+        <script>
+            // Autofill the input fields when the page loads
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('sheet1').value = 'Samples';
+                document.getElementById('sheet2').value = 'High Controls';
+                document.getElementById('final_sheet').value = 'Analysis';
+            });
+        </script>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 James's Website. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -2,24 +2,31 @@ import pandas as pd
 from scipy.stats import linregress
 from datetime import datetime
 import os
+from flask import Flask, render_template, request, redirect
 
 class AnalysisUtilities:
     
     @staticmethod
-    def getfile_name():
-        return 'LC2-032_KCP1 pHL-YEMK DC 20231030.xlsx'
+    def getfile_name(uploaded_file_path):
+        # Extract the base name (file name with extension) from the full path
+        file_name_with_extension = os.path.basename(uploaded_file_path)
+        
+        # Remove the extension to get only the file name
+        file_name_without_extension = os.path.splitext(file_name_with_extension)[0]
+
+        return file_name_without_extension
 
     @staticmethod
-    def getsheet1_name():
-        return "Samples"
+    def getsheet1_name(sheet1):
+        return sheet1
 
     @staticmethod
-    def getsheet2_name():
-        return "High Controls"
+    def getsheet2_name(sheet2):
+        return sheet2
     
     @staticmethod
-    def get_new_sheet_name():
-        return "Analysis"
+    def get_new_sheet_name(final_sheet):
+        return final_sheet
 
     @staticmethod
     def remove_columns_names_list():
@@ -51,6 +58,7 @@ class AnalysisUtilities:
 
         # Create DataFrames for "Samples" and "High Controls" sheets
         samples_df = pd.read_excel(file_path, sheet_name=sheet1)
+
         high_controls_df = pd.read_excel(file_path, sheet_name=sheet2)
 
         # Combine the DataFrames into one
@@ -77,16 +85,6 @@ class AnalysisUtilities:
             analysis_df[new_name] = ''
 
         return analysis_df
-
-    @staticmethod
-    def write_analysis_sheet(analysis_df, file_path, new_sheet_name):
-        # Check if the "Analysis" sheet already exists and delete it
-        with pd.ExcelWriter(file_path, engine='openpyxl', mode='a') as writer:
-            if new_sheet_name in writer.sheets:
-                writer.book.remove(writer.sheets[new_sheet_name])
-
-            # Write the DataFrame to a new sheet named "Analysis"
-            analysis_df.to_excel(writer, sheet_name=new_sheet_name, index=False)
 
     @staticmethod
     def calculate_pHL_VL2_BL1(analysis_df):
@@ -463,3 +461,21 @@ class AnalysisUtilities:
                 export_df.to_excel(writer, sheet_name=sheet_name, index=False)
 
         return export_df
+    
+    @staticmethod
+    def write_analysis_sheet(analysis_df, file_path, new_sheet_name):
+        # Extract the file name from the original file path
+        original_file_name = os.path.basename(file_path)
+
+        # Construct the new file name by adding "downloads/" to the front
+        new_file_path = os.path.join("downloads", f"{original_file_name}")
+
+        # Check if the "Analysis" sheet already exists and delete it in the new file
+        with pd.ExcelWriter(new_file_path, engine='openpyxl') as writer:
+            if new_sheet_name in writer.sheets:
+                writer.book.remove(writer.sheets[new_sheet_name])
+
+            # Write the DataFrame to a new sheet named "Analysis" in the new file
+            analysis_df.to_excel(writer, sheet_name=new_sheet_name, index=False)
+
+        return new_file_path

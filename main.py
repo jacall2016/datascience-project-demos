@@ -1,18 +1,24 @@
 from utilities import AnalysisUtilities
+from flask import Flask, render_template, request, send_file, abort
+import os
+import sys
 
-def main():
+app = Flask(__name__)
+
+def generate_files(uploaded_file_path, sheet1, sheet2, final_sheet):
+    
     # Specify the path to your Excel file
-    file_name = AnalysisUtilities.getfile_name()
-    file_path = "root/" + file_name
-
+    file_name = AnalysisUtilities.getfile_name(uploaded_file_path)
+    file_path = "uploads/" + file_name + ".xlsx"
+    
     #get functions to retreave the desired data
     renamed_column_names_list = AnalysisUtilities.get_renamed_column_names()
     new_column_names_list = AnalysisUtilities.get_new_column_names()
-    sheet1_name = AnalysisUtilities.getsheet1_name()
-    sheet2_name = AnalysisUtilities.getsheet2_name()
-    new_sheet_name = AnalysisUtilities.get_new_sheet_name()
-    removed_columns_names_list = AnalysisUtilities.remove_columns_names_list()
-
+    sheet1_name = AnalysisUtilities.getsheet1_name(sheet1)
+    sheet2_name = AnalysisUtilities.getsheet2_name(sheet2)
+    new_sheet_name = AnalysisUtilities.get_new_sheet_name(final_sheet)
+    removed_columns_names_list = AnalysisUtilities.remove_columns_names_list()    
+    
     # Prepare analysis DataFrame by combining data from Samples and High Controls and removing mean and SD rows
     combined_df = AnalysisUtilities.prepare_analysis_df(file_path, sheet1_name, sheet2_name, removed_columns_names_list)
 
@@ -80,13 +86,67 @@ def main():
     analysis_df = AnalysisUtilities.populate_hits_live_z_score(analysis_df)
 
     #write the All_Plates_YEMK_pHL_Live Excel file
-    AnalysisUtilities.export_All_Plates_YEMK_pHL_Live(analysis_df, 'root/All_P_YEMK_pHL_Live.xlsx','All_P_YEMK_pHL_Live')
+    AnalysisUtilities.export_All_Plates_YEMK_pHL_Live(analysis_df, 'downloads/All_P_YEMK_pHL_Live.xlsx','All_P_YEMK_pHL_Live')
 
     #write All hits excel file exclude all rows that don't have a hit in at least 1 of the three z numbers
-    AnalysisUtilities.export_All_hits(analysis_df, 'root/All_hits.xlsx','All_hits')
+    AnalysisUtilities.export_All_hits(analysis_df, 'downloads/All_hits.xlsx','All_hits')
 
     # Write analysis sheet
-    AnalysisUtilities.write_analysis_sheet(analysis_df, file_path, new_sheet_name)
+    AnalysisUtilities.write_analysis_sheet(analysis_df, "downloads/LC2-032_KCP1 pHL-YEMK DC 20231030.xlsx", new_sheet_name)
+    
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/combine_sheets', methods=['POST'])
+def combine_sheets():
+    # Handle file and form data
+    input_file = request.files['input_file']
+    sheet1 = request.form['sheet1']
+    sheet2 = request.form['sheet2']
+    final_sheet = request.form['final_sheet']
+
+    # Save the uploaded Excel file
+    uploaded_file_path = os.path.join("uploads", input_file.filename)
+    input_file.save(uploaded_file_path)
+
+    # Generate the Excel files using your processing function
+    generate_files(uploaded_file_path, sheet1, sheet2, final_sheet)
+
+    # Clear the contents of the "uploads" folder
+    clear_uploads_folder()
+
+    # Provide download links on the webpage
+    return render_template('download.html', 
+                           input_file_name=input_file.filename,
+                           output_file_names=["LC2-032_KCP1 pHL-YEMK DC 20231030.xlsx", "All_P_YEMK_pHL_Live.xlsx", "All_hits.xlsx"])
+
+@app.route('/download_file')
+def download_file():
+    filename = request.args.get('filename')
+    file_path = os.path.join("downloads", filename)
+
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        abort(404)
+
+def clear_uploads_folder():
+    # Define the path to the "uploads" folder
+    uploads_folder_path = "uploads"
+
+    # Check if the folder exists
+    if os.path.exists(uploads_folder_path):
+        # Iterate over the files in the folder and remove them
+        for file_name in os.listdir(uploads_folder_path):
+            file_path = os.path.join(uploads_folder_path, file_name)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
+    else:
+        print("The 'uploads' folder does not exist.")
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True, port=5000)
