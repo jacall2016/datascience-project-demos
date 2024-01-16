@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-def generate_files(uploaded_file_path, sheet1, sheet2, final_sheet):
+def generate_files_phl_bl1_yemk_vl1(uploaded_file_path, sheet1, sheet2, final_sheet):
     
     # Specify the path to your Excel file
     file_name = AnalysisUtilities.getfile_name(uploaded_file_path)
@@ -101,16 +101,24 @@ def index():
 def combine_sheets():
     # Handle file and form data
     input_file = request.files['input_file']
-    sheet1 = request.form['sheet1']
-    sheet2 = request.form['sheet2']
-    final_sheet = request.form['final_sheet']
+    file_type = request.form['selected_radio_id']
+
+    validate(input_file,file_type)
+
+    sheet1 = "Samples"
+    sheet2 = "High Controls"
+    final_sheet = "Analysis"
 
     # Save the uploaded Excel file
     uploaded_file_path = os.path.join("uploads", input_file.filename)
     input_file.save(uploaded_file_path)
 
-    # Generate the Excel files using your processing function
-    generate_files(uploaded_file_path, sheet1, sheet2, final_sheet)
+    if file_type == "pl1":
+        # Generate the Excel phl_bl1_yemk_vl1 files using your processing function
+        generate_files_phl_bl1_yemk_vl1(uploaded_file_path, sheet1, sheet2, final_sheet)
+    elif file_type == "XXXX":
+        # Generate the Excel XXXX files using your processing function
+        generate_files_phl_bl1_yemk_vl1(uploaded_file_path, sheet1, sheet2, final_sheet)
 
     # Clear the contents of the "uploads" folder
     clear_uploads_folder()
@@ -146,6 +154,9 @@ def clear_uploads_folder():
                 print(f"Failed to delete {file_path}. Reason: {e}")
     else:
         print("The 'uploads' folder does not exist.")
+
+def validate(input_file,file_type):
+    pass
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

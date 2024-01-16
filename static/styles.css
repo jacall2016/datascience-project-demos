@@ -33,22 +33,39 @@ main {
   background-color: #fff;
 }
 
+section {
+  max-width: 50%; /* Set main to half the screen width */
+  width: 100%;
+  margin: auto; /* Center main horizontally */
+}
+
 form {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
+/* Additional styling for radio buttons and labels */
+div.radio-group {
+  display: flex;
+  align-items: center;
+}
+
+input[type="radio"] {
+  margin-right: 5px; /* Adjust the spacing between radio button and label */
+}
+
 label {
-  margin-bottom: 0.5em;
+  margin-bottom: 40px;
+  margin-top:40px;
 }
 
 input {
-  margin-bottom: 1em;
+  margin-bottom: 10px;
+  margin-top: 10px;
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 100%;
   background-color: white; /* Set the background color to white */
 }
 
